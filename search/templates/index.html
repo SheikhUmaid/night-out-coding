@@ -1,0 +1,146 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E-Com Data Finder</title>
+  <link rel="stylesheet" href="{% static 'index.css' %}">
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="header">🔍 E-Com Data Finder</div>
+
+    <div class="cards">
+
+      <!-- Fetch Websites -->
+      <form method="POST" class="card" id="fetchForm">
+        {% csrf_token %}
+        <h3>Fetch Websites</h3>
+        <label>Country</label>
+        <select name="country" required>
+          <option value="India">India</option>
+          <option value="Afghanistan">Afghanistan</option>
+          <option value="Albania">Albania</option>
+          <option value="Algeria">Algeria</option>
+          <option value="Andorra">Andorra</option>
+          <option value="Angola">Angola</option>
+          <option value="Argentina">Argentina</option>
+          <option value="Armenia">Armenia</option>
+          <option value="Australia">Australia</option>
+          <option value="Austria">Austria</option>
+          <option value="Azerbaijan">Azerbaijan</option>
+          <option value="Bahamas">Bahamas</option>
+          <option value="Bahrain">Bahrain</option>
+          <option value="Bangladesh">Bangladesh</option>
+          <option value="Belarus">Belarus</option>
+          <option value="Belgium">Belgium</option>
+          <option value="Belize">Belize</option>
+          <option value="Benin">Benin</option>
+          <option value="Bhutan">Bhutan</option>
+          <option value="Bolivia">Bolivia</option>
+          <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
+          <option value="Botswana">Botswana</option>
+          <option value="Brazil">Brazil</option>
+          <option value="Brunei">Brunei</option>
+          <option value="Bulgaria">Bulgaria</option>
+          <option value="Burkina Faso">Burkina Faso</option>
+          <option value="Burundi">Burundi</option>
+          <option value="Cambodia">Cambodia</option>
+          <option value="Cameroon">Cameroon</option>
+          <option value="Canada">Canada</option>
+          <option value="Cape Verde">Cape Verde</option>
+          <option value="Central African Republic">Central African Republic</option>
+          <option value="Chad">Chad</option>
+          <option value="Chile">Chile</option>
+          <option value="China">China</option>
+          <option value="Colombia">Colombia</option>
+          <option value="Comoros">Comoros</option>
+          <option value="Congo (Brazzaville)">Congo (Brazzaville)</option>
+          <option value="Congo (Kinshasa)">Congo (Kinshasa)</option>
+          <option value="Costa Rica">Costa Rica</option>
+          <option value="Croatia">Croatia</option>
+          <option value="Cuba">Cuba</option>
+          <option value="Cyprus">Cyprus</option>
+          <option value="Czech Republic">Czech Republic</option>
+        </select>
+        <input type="text" name="city" placeholder="State/city keyword" required />
+        <input type="text" name="industry" placeholder="Industry keyword" required />
+        <input type="number" name="count" placeholder="Count" value="100" required />
+        <button type="submit" name="fetch_websites" class="button" id="fetchBtn">Fetch Websites</button>
+      </form>
+
+      <!-- Filter Websites -->
+      <form method="POST" enctype="multipart/form-data" class="card">
+        {% csrf_token %}
+        <h3>Filter Websites</h3>
+        <label><input type="checkbox" name="is_active" /> Domain Active</label><br />
+        <label><input type="checkbox" name="is_shopify" /> Only Shopify websites</label><br />
+        <label><input type="checkbox" name="loads_fast" /> Loads within 5 secs</label><br />
+        <p style="margin: 15px 0; color: #666;">Upload CSV to Filter</p>
+        <input type="file" name="csv_file" required><br>
+        <button type="submit" class="button" name="filter_websites">Apply Filters</button>
+      </form>
+
+      <!-- Fetch Emails -->
+      <form method="POST" enctype="multipart/form-data" class="card">
+        {% csrf_token %}
+        <h3>Fetch Email IDs</h3>
+        <p style="margin: 15px 0; color: #666;">Upload CSV to Find Emails</p>
+        <input type="file" name="csv_file_email" required><br>
+        <button type="submit" class="button" name="fetch_emails">✉️ Fetch Email IDs</button>
+      </form>
+    </div>
+
+    <!-- Results Table -->
+    <div class="results">
+      <div class="results-header">
+        <span>Results</span>
+        {% if csv_download %}
+        <a href="{{ csv_download }}" class="export-btn" download>⬇️ Export inn CSV</a>
+        {% endif %}
+      </div>
+
+      {% if results %}
+      <table class="results-table">
+        <thead>
+          <tr>
+            {% for key in results.0 %}
+            <th>{{ key }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in results %}
+          <tr>
+            {% for key, value in row.items %}
+            <td>{{ value }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <table class="results-table">
+        <tr>
+          <td>No results yet.</td>
+        </tr>
+      </table>
+      {% endif %}
+    </div>
+  </div>
+
+  <footer>© 2025 Modaka Technologies Pvt. Ltd.</footer>
+
+  <script>
+    document.getElementById('fetchForm').addEventListener('submit', function () {
+      document.getElementById('fetchBtn').innerText = 'Please wait fetching...';
+    });
+  </script>
+
+</body>
+
+</html>
